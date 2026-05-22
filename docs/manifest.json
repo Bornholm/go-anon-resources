@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "version": "models-v1",
+  "published_at": "2026-05-21T00:00:00Z",
+  "models": {
+    "fr": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/fr.crf.gz",
+      "sha256": "536db023aaca0e1409c8c67cfe17bc4d9ae28d515daa70a51e168327398bced5",
+      "size_bytes": 277744297,
+      "metadata": {
+        "f1": 0.824,
+        "corpus": "WikiNER-fr",
+        "size_mb": 264.9
+      }
+    },
+    "en": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en.crf.gz",
+      "sha256": "4abd4cbaa101972fd7108c8b83df28edcc45edf9ffd9525aa688779512ec97c8",
+      "size_bytes": 307011378,
+      "metadata": {
+        "f1": 0.888,
+        "corpus": "WikiNER-en",
+        "size_mb": 292.8
+      }
+    },
+    "es": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/es.crf.gz",
+      "sha256": "a01a2647e8b1302585036f779c7c780c7b63a826d7ab52d4d5928ed3f515f1e1",
+      "size_bytes": 224429652,
+      "metadata": {
+        "f1": 0.938,
+        "corpus": "WikiNER-es",
+        "size_mb": 214.0
+      }
+    }
+  },
+  "gazetteers": {
+    "fr_prenoms": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/fr_prenoms.txt",
+      "sha256": "9ed1fd952c8140ae85b9307c6ab1bddd4b959f96170e0bec9c189273cd5e49b9",
+      "size_bytes": 375433,
+      "languages": ["fr"],
+      "type": "firstnames"
+    },
+    "fr_communes": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/fr_communes.txt",
+      "sha256": "5b5d6c79d674efae042bce74fa8faa0614a0b7f60c78f0f7f1194da1f539ab89",
+      "size_bytes": 432409,
+      "languages": ["fr"],
+      "type": "locations"
+    },
+    "fr_villes": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/fr_villes.txt",
+      "sha256": "29fd9caa04e8ff1e4126a059d3b2fac5e8978ef95dcba8478090b7e4058197e2",
+      "size_bytes": 1492,
+      "languages": ["fr"],
+      "type": "locations"
+    },
+    "en_firstnames": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en_firstnames.txt",
+      "sha256": "14ad1b38229622910633ccee44b4ee370ecdc34a7aeb8af277a48370f99df8a7",
+      "size_bytes": 1471,
+      "languages": ["en"],
+      "type": "firstnames"
+    },
+    "en_cities": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en_cities.txt",
+      "sha256": "e891bc3ce7df8f3e68022df00e046454944a16e4bb866aa418f8476ec99b6268",
+      "size_bytes": 2011,
+      "languages": ["en"],
+      "type": "locations"
+    },
+    "en_companies": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en_companies.txt",
+      "sha256": "ee99ebecdda36c7862d1608b3eab473c42ee557815bb4cd4ff6be1b28e9a2cdb",
+      "size_bytes": 841,
+      "languages": ["en"],
+      "type": "organizations"
+    },
+    "en_countries": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en_countries.txt",
+      "sha256": "a5cc5aef7fc905e4b33adfdc443e82e66829a2c28705c84771f884ed5e57062a",
+      "size_bytes": 613,
+      "languages": ["en"],
+      "type": "locations"
+    },
+    "en_universities": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/en_universities.txt",
+      "sha256": "e033b1254d886721bfce6cae359d47b616f9b29e5ca4e2c627d22d6828e0110e",
+      "size_bytes": 702,
+      "languages": ["en"],
+      "type": "organizations"
+    },
+    "fr_en_es_prenoms": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v1/fr_en_es_prenoms.txt",
+      "sha256": "8df870364dd09c1bef164bc971d296b5f9c8b502c919993daf8c515c9097ed35",
+      "size_bytes": 2104259,
+      "languages": ["fr", "en", "es"],
+      "type": "firstnames"
+    }
+  }
+}
