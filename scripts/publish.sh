@@ -185,6 +185,8 @@ else
     REPO="go-anon-resources"
 fi
 
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "master")
+
 BASE_URL="https://github.com/${OWNER}/${REPO}/releases/download/${TAG}"
 
 # Générer le nouveau manifest
@@ -300,12 +302,10 @@ echo ""
 echo "=== Prochaines étapes ==="
 echo ""
 echo "1. Vérifie le manifest : cat $MANIFEST_FILE"
-echo "2. Commit, push et push du tag :"
+echo "2. Commit et push (le tag est déjà créé par gh release create) :"
 echo "   git add $MANIFEST_FILE"
 echo "   git commit -m \"chore: update manifest for $TAG\""
-echo "   git push origin main"
-echo "   git tag -f -a $TAG -m $TAG"
-echo "   git push --tags"
+echo "   git push origin $BRANCH"
 echo ""
 echo "3. GitHub Pages servira automatiquement le nouveau manifest à :"
 echo "   https://${OWNER}.github.io/${REPO}/manifest.json"
