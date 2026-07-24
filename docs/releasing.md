@@ -9,6 +9,10 @@ NER pour le projet go-anon.
 - Permission de push sur le dépôt `go-anon-resources`
 - Les fichiers modèles `.crf.gz` présents dans `models/`
 - Les fichiers gazetteers `.txt` dans `gazetteers/<type>/`
+- `minisign` installé et une clé de signature (voir
+  [§ Signature du manifest](#signature-du-manifest-authenticité)). Optionnel
+  pendant la transition : sans clé, le manifest est publié **non signé** et
+  go-anon poursuit avec un avertissement.
 
 ## Structure des gazetteers
 
@@ -81,12 +85,16 @@ Le script effectue automatiquement :
 - Création de la release GitHub avec tous les fichiers comme assets
 - Mise à jour du manifest local dans `docs/manifest.json`
 
+Le script signe aussi le manifest (`docs/manifest.json.minisig`) si une clé est
+disponible — voir [§ Signature du manifest](#signature-du-manifest-authenticité).
+
 ### 3. Vérifier et pousser le manifest
 
 ```bash
-git add docs/manifest.json
+# Ajouter la signature si elle a été produite (docs/manifest.json.minisig).
+git add docs/manifest.json docs/manifest.json.minisig
 git commit -m "chore: update manifest for $TAG"
-git push origin main
+git push origin master
 git push origin "$TAG"
 ```
 
@@ -94,6 +102,62 @@ git push origin "$TAG"
 
 - Release GitHub : `https://github.com/bornholm/go-anon-resources/releases/latest`
 - Manifest GitHub Pages : `https://bornholm.github.io/go-anon-resources/manifest.json`
+- Signature : `https://bornholm.github.io/go-anon-resources/manifest.json.minisig`
+
+## Signature du manifest (authenticité)
+
+Le SHA-256 du manifest protège l'intégrité du **transfert**, pas l'**authenticité
+de la source** : qui contrôle le dépôt de releases peut fournir un modèle
+malveillant *et* son hash. go-anon vérifie donc une signature **Ed25519 (format
+minisign)** du manifest avec une clé publique embarquée dans le binaire, avant de
+faire confiance aux hashs. Chaîne de confiance :
+
+```
+signature (clé embarquée) → manifest → sha256 → modèle
+```
+
+> Seul le **manifest** est signé — jamais les modèles. Republier une nouvelle
+> version des `.crf.gz` n'est **pas** nécessaire pour activer la signature.
+
+### Générer la paire de clés (une seule fois)
+
+```bash
+minisign -G -p minisign.pub -s minisign.key
+```
+
+- `minisign.key` (clé secrète) : **jamais commitée**. La conserver hors dépôt
+  (gestionnaire de secrets, ou `~/.minisign/minisign.key`, l'emplacement lu par
+  défaut). Pour une clé utilisable en CI sans prompt, générer avec `-W`
+  (sans mot de passe).
+- `minisign.pub` (clé publique) : coller sa **ligne base64** (la 2ᵉ ligne du
+  fichier) dans go-anon, constante `embeddedPublicKey` de
+  `pkg/modelstore/keys.go`, puis recompiler. La vérification devient alors active
+  par défaut, sans autre changement côté appelants.
+
+### Signer
+
+`scripts/publish.sh` signe automatiquement `docs/manifest.json` s'il trouve une
+clé (`$GOANON_SIGN_KEY`, sinon `~/.minisign/minisign.key`) et produit
+`docs/manifest.json.minisig`, commité et servi par Pages à
+`…/manifest.json.minisig` (= URL du manifest + `.minisig`, là où go-anon la
+cherche).
+
+Pour signer manuellement un manifest existant :
+
+```bash
+minisign -S -s minisign.key -m docs/manifest.json
+```
+
+> **Signer les octets exacts servis par Pages.** La signature porte sur le corps
+> brut de `docs/manifest.json` tel qu'il est commité. Toute modification
+> ultérieure (même un espace) l'invalide : générer le manifest → le figer → le
+> signer → committer les deux ensemble.
+
+Le vérificateur go-anon accepte les deux modes minisign (préhaché `ED` et legacy
+`Ed`) et contrôle aussi l'intégrité du *trusted comment* via la signature
+globale. Tant que `embeddedPublicKey` reste vide côté go-anon, un manifest signé
+ou non fonctionne (avertissement « manifest non vérifié » sinon) : on peut donc
+publier le `.minisig` **avant** d'activer la clé dans le binaire.
 
 ## Schéma du manifest
 

@@ -24,10 +24,11 @@ modèles NER (CRF) et gazetteers.
 │       ├── en_companies.txt       Entreprises mondiales
 │       └── en_universities.txt    Universités mondiales
 ├── docs/
-│   ├── manifest.json       Catalogue des ressources (GitHub Pages)
-│   └── releasing-models.md Guide de publication
+│   ├── manifest.json         Catalogue des ressources (GitHub Pages)
+│   ├── manifest.json.minisig Signature Ed25519 du manifest (authenticité)
+│   └── releasing.md          Guide de publication
 └── scripts/
-    └── publish-models.sh   Script de publication
+    └── publish.sh            Script de publication
 ```
 
 Les gazetteers sont organisés par type (`firstnames`, `locations`,
@@ -56,6 +57,11 @@ publiés sur GitHub Releases.
 ```
 https://bornholm.github.io/go-anon-resources/manifest.json
 ```
+
+Le manifest est **signé** (Ed25519, format minisign) : go-anon vérifie
+`manifest.json.minisig` avec une clé publique embarquée avant de faire confiance
+aux SHA-256 qu'il contient. Voir [docs/releasing.md](docs/releasing.md) §
+« Signature du manifest ».
 
 ## Publication
 

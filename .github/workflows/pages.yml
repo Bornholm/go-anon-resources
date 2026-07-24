@@ -1,4 +1,4 @@
-# Déploie docs/manifest.json sur GitHub Pages.
+# Déploie docs/manifest.json (et sa signature .minisig) sur GitHub Pages.
 #
 # Config : Settings > Pages > Source > "GitHub Actions"
 name: Deploy Pages
@@ -8,6 +8,7 @@ on:
     branches: [master]
     paths:
       - docs/manifest.json
+      - docs/manifest.json.minisig
   workflow_dispatch:
 
 permissions:

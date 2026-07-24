@@ -39,6 +39,14 @@ MODELS_DIR="models"
 GAZETTEERS_DIR="gazetteers"
 DOCS_DIR="docs"
 MANIFEST_FILE="${DOCS_DIR}/manifest.json"
+MANIFEST_SIG_FILE="${MANIFEST_FILE}.minisig"
+
+# Signature du manifest (minisign). La clé secrète n'est jamais commitée :
+# elle est fournie par $GOANON_SIGN_KEY, sinon l'emplacement minisign par défaut
+# (~/.minisign/minisign.key). Si minisign ou la clé manquent, la signature est
+# ignorée avec avertissement (publication non signée, tolérée pendant la
+# transition). Voir docs/releasing.md § « Signature du manifest ».
+SIGN_KEY="${GOANON_SIGN_KEY:-$HOME/.minisign/minisign.key}"
 
 # Vérifications préalables
 if ! command -v gh &>/dev/null; then
@@ -299,15 +307,50 @@ cp "$MANIFEST_TMP" "$MANIFEST_FILE"
 echo "✓ $MANIFEST_FILE mis à jour."
 
 echo ""
+echo "=== Signature du manifest ==="
+# On signe les octets EXACTS servis par GitHub Pages ($MANIFEST_FILE), pas le
+# fichier temporaire : go-anon vérifie la signature sur le corps brut du
+# manifest. Le trusted comment porte le tag et la date (intégrité vérifiée par
+# la signature globale minisign, contrôlée côté go-anon).
+SIGNED=false
+if ! command -v minisign &>/dev/null; then
+    echo "⚠ minisign non installé : manifest NON signé."
+    echo "  Installe minisign puis re-signe : minisign -S -s <clé> -m $MANIFEST_FILE"
+elif [ ! -f "$SIGN_KEY" ]; then
+    echo "⚠ clé de signature introuvable ($SIGN_KEY) : manifest NON signé."
+    echo "  Génère-la une fois : minisign -G   (puis renseigne la clé publique dans go-anon)"
+    echo "  Ou pointe une clé existante : GOANON_SIGN_KEY=/chemin/minisign.key $0 $TAG"
+else
+    if minisign -S -s "$SIGN_KEY" -m "$MANIFEST_FILE" \
+        -c "go-anon-resources manifest" \
+        -t "go-anon-resources $TAG signé le $PUBLISHED_AT"; then
+        # minisign écrit <fichier>.minisig à côté de la cible.
+        echo "✓ $MANIFEST_SIG_FILE généré."
+        SIGNED=true
+    else
+        echo "⚠ échec de la signature : manifest NON signé."
+    fi
+fi
+
+echo ""
 echo "=== Prochaines étapes ==="
 echo ""
 echo "1. Vérifie le manifest : cat $MANIFEST_FILE"
 echo "2. Commit et push (le tag est déjà créé par gh release create) :"
-echo "   git add $MANIFEST_FILE"
+if [ "$SIGNED" = true ]; then
+    echo "   git add $MANIFEST_FILE $MANIFEST_SIG_FILE"
+else
+    echo "   git add $MANIFEST_FILE"
+    echo "   (⚠ manifest non signé — go-anon poursuivra avec un avertissement)"
+fi
 echo "   git commit -m \"chore: update manifest for $TAG\""
 echo "   git push origin $BRANCH"
 echo ""
 echo "3. GitHub Pages servira automatiquement le nouveau manifest à :"
 echo "   https://${OWNER}.github.io/${REPO}/manifest.json"
+if [ "$SIGNED" = true ]; then
+    echo "   et sa signature à :"
+    echo "   https://${OWNER}.github.io/${REPO}/manifest.json.minisig"
+fi
 
 rm "$MANIFEST_TMP" "$RELEASE_NOTES"
