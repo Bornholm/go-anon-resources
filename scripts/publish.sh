@@ -37,6 +37,7 @@ else
 fi
 MODELS_DIR="models"
 GAZETTEERS_DIR="gazetteers"
+CLUSTERS_DIR="clusters"
 DOCS_DIR="docs"
 MANIFEST_FILE="${DOCS_DIR}/manifest.json"
 MANIFEST_SIG_FILE="${MANIFEST_FILE}.minisig"
@@ -71,6 +72,14 @@ while IFS= read -r -d '' f; do
     GAZETTEER_FILES+=("$f")
 done < <(find "$GAZETTEERS_DIR" -name '*.txt' -type f -print0)
 
+# Découvrir les Brown clusters : clusters/<lang>.txt
+# Absents = release sans clusters, ce qui reste valide : le champ est
+# facultatif dans le manifest et un client sans clusters fonctionne.
+CLUSTER_FILES=()
+while IFS= read -r -d '' f; do
+    CLUSTER_FILES+=("$f")
+done < <(find "$CLUSTERS_DIR" -name '*.txt' -type f -print0 2>/dev/null)
+
 if [ ${#GAZETTEER_FILES[@]} -eq 0 ]; then
     echo "Erreur : aucun fichier .txt trouvé dans $GAZETTEERS_DIR/"
     exit 1
@@ -85,6 +94,15 @@ echo "Gazetteers trouvés :"
 for f in "${GAZETTEER_FILES[@]}"; do
     echo "  - ${f#$GAZETTEERS_DIR/} ($(du -h "$f" | cut -f1))"
 done
+
+if [ ${#CLUSTER_FILES[@]} -eq 0 ]; then
+    echo "Brown clusters : aucun (champ facultatif du manifest)"
+else
+    echo "Brown clusters (${#CLUSTER_FILES[@]}) :"
+    for f in "${CLUSTER_FILES[@]}"; do
+        echo "  - ${f#$CLUSTERS_DIR/} ($(du -h "$f" | cut -f1))"
+    done
+fi
 
 # Vérifier que le tag n'existe pas déjà localement
 if git rev-parse "$TAG" &>/dev/null 2>&1; then
@@ -177,6 +195,22 @@ $(for f in "${GAZETTEER_FILES[@]}"; do
     SIZE=$(du -h "$f" | cut -f1)
     echo "| \`$SHORT\` | $TYPE | $LANG | $SIZE |"
 done)
+
+### Brown clusters
+$(if [ ${#CLUSTER_FILES[@]} -eq 0 ]; then
+    echo "_Aucun dans cette release._"
+else
+    echo "| Langue | Fichier | Taille | SHA-256 |"
+    echo "|--------|---------|--------|---------|"
+    for f in "${CLUSTER_FILES[@]}"; do
+        BASENAME=$(basename "$f")
+        echo "| ${BASENAME%.txt} | \`clusters_$BASENAME\` | $(du -h "$f" | cut -f1) | \`$(sha256sum "$f" | cut -d" " -f1)\` |"
+    done
+fi)
+
+Les clusters sont une **feature du modèle** : un modèle entraîné avec eux perd
+du rappel s'ils manquent à l'inférence. \`anon-doc -model auto\` les charge
+désormais automatiquement.
 EOF
 
 echo ""
@@ -275,6 +309,42 @@ JSONEOF
 done
 
 cat >> "$MANIFEST_TMP" <<JSONEOF
+  },
+  "clusters": {
+JSONEOF
+
+# Les clusters sont indexés par langue : un jeu est lié au corpus qui l'a
+# produit et ne se partage pas entre langues, contrairement à une liste de
+# villes. Le nom du fichier EST le code de langue.
+FIRST=true
+for f in "${CLUSTER_FILES[@]}"; do
+    BASENAME=$(basename "$f")
+    LANG="${BASENAME%.txt}"
+    SHA=$(sha256sum "$f" | cut -d' ' -f1)
+    SIZE=$(stat -c '%s' "$f")
+
+    if [[ ! "$LANG" =~ ^[a-z]{2}$ ]]; then
+        echo "Erreur : $f — le nom doit être un code de langue à deux lettres (ex. clusters/fr.txt)."
+        rm -f "$MANIFEST_TMP" "$RELEASE_NOTES"
+        exit 1
+    fi
+
+    if [ "$FIRST" = true ]; then
+        FIRST=false
+    else
+        echo "," >> "$MANIFEST_TMP"
+    fi
+
+    cat >> "$MANIFEST_TMP" <<JSONEOF
+    "$LANG": {
+      "url": "${BASE_URL}/clusters_${BASENAME}",
+      "sha256": "$SHA",
+      "size_bytes": $SIZE
+    }
+JSONEOF
+done
+
+cat >> "$MANIFEST_TMP" <<JSONEOF
   }
 }
 JSONEOF
@@ -293,7 +363,21 @@ echo ""
 echo "=== Création de la release GitHub ==="
 echo "Tag : $TAG"
 
-ALL_ASSETS=("${MODEL_FILES[@]}" "${GAZETTEER_FILES[@]}")
+# Les assets d'une release GitHub vivent dans un espace de noms plat : un
+# clusters/fr.txt et un gazetteers/locations/fr.txt entreraient en collision.
+# Les clusters sont donc copiés sous un nom préfixé, cohérent avec l'URL
+# inscrite dans le manifest.
+CLUSTER_ASSETS=()
+if [ ${#CLUSTER_FILES[@]} -gt 0 ]; then
+    CLUSTER_STAGE=$(mktemp -d)
+    trap 'rm -rf "$CLUSTER_STAGE"' EXIT
+    for f in "${CLUSTER_FILES[@]}"; do
+        cp "$f" "$CLUSTER_STAGE/clusters_$(basename "$f")"
+        CLUSTER_ASSETS+=("$CLUSTER_STAGE/clusters_$(basename "$f")")
+    done
+fi
+
+ALL_ASSETS=("${MODEL_FILES[@]}" "${GAZETTEER_FILES[@]}" "${CLUSTER_ASSETS[@]}")
 gh release create "$TAG" \
     "${ALL_ASSETS[@]}" \
     --title "$TAG" \

@@ -1,7 +1,7 @@
 # go-anon-resources
 
 Ressources pré-entraînées pour [go-anon](https://github.com/bornholm/go-anon) :
-modèles NER (CRF) et gazetteers.
+modèles NER (CRF), gazetteers et Brown clusters.
 
 ## Contenu
 
@@ -23,6 +23,9 @@ modèles NER (CRF) et gazetteers.
 │   └── organizations/
 │       ├── en_companies.txt       Entreprises mondiales
 │       └── en_universities.txt    Universités mondiales
+├── clusters/
+│   ├── fr.txt       Brown clusters français
+│   └── en.txt       Brown clusters anglais
 ├── docs/
 │   ├── manifest.json         Catalogue des ressources (GitHub Pages)
 │   ├── manifest.json.minisig Signature Ed25519 du manifest (authenticité)
@@ -35,14 +38,20 @@ Les gazetteers sont organisés par type (`firstnames`, `locations`,
 `organizations`). Les langues sont encodées dans le préfixe du nom de fichier
 (ex: `fr_en_es_prenoms.txt` → langues fr, en, es).
 
+Les **Brown clusters** sont nommés par le seul code de langue (`clusters/fr.txt`),
+car un jeu de clusters est lié au corpus qui l'a produit et ne se partage pas
+entre langues. Ils doivent être **ceux utilisés à l'entraînement du modèle de la
+même langue** : en publier d'autres reproduirait le défaut qu'ils corrigent —
+une feature que le modèle attend et qui ne se comporte pas comme à
+l'entraînement.
+
 ## Utilisation
 
 Les modèles et gazetteers sont téléchargeables automatiquement par go-anon :
 
 ```bash
-# Téléchargement automatique du modèle + gazetteers
-anon-doc -model auto -lang fr -gazetteers auto \
-  -input doc.docx -output out.docx
+# Téléchargement automatique du modèle, des gazetteers et des clusters
+anon-doc -model auto -lang fr -input doc.docx -output out.docx
 
 # Serveur avec toutes les ressources
 server -models auto -gazetteers auto

@@ -61,10 +61,29 @@ go-anon-resources/
     │   ├── fr_villes.txt
     │   ├── en_cities.txt
     │   └── en_countries.txt
-    └── organizations/
-        ├── en_companies.txt
-        └── en_universities.txt
+    ├── organizations/
+    │   ├── en_companies.txt
+    │   └── en_universities.txt
+    └── ...
+└── clusters/
+    ├── fr.txt
+    └── en.txt
 ```
+
+**Brown clusters** — le nom du fichier est le seul code de langue, sur deux
+lettres minuscules (`clusters/fr.txt`). Le script refuse tout autre nom : la clé
+sert à construire un chemin de cache côté client, et un code arbitraire ouvrirait
+une traversée de répertoire.
+
+Ils sont **facultatifs** : une release sans `clusters/` reste valide et les
+clients existants n'y voient que du feu.
+
+> ⚠️ Publier pour une langue **les clusters utilisés à l'entraînement de son
+> modèle**, et pas un autre jeu. Les clusters sont une feature du CRF : un
+> fichier différent de celui de l'entraînement ne « manque » plus, il *ment* —
+> le modèle reçoit des identifiants de cluster qui ne correspondent pas aux
+> poids qu'il a appris. C'est une dégradation silencieuse, plus difficile à
+> diagnostiquer que leur absence.
 
 ### 2. Lancer le script de publication
 
@@ -193,9 +212,26 @@ publier le `.minisig` **avant** d'activer la clé dans le binaire.
       "languages": ["fr", "en", "es"],
       "type": "firstnames"
     }
+  },
+  "clusters": {
+    "fr": {
+      "url": "https://github.com/bornholm/go-anon-resources/releases/download/models-v2/clusters_fr.txt",
+      "sha256": "4c1a09b...",
+      "size_bytes": 1321588
+    }
   }
 }
 ```
+
+Le champ `clusters` est **facultatif** et indexé par code de langue — un jeu de
+clusters est lié au corpus qui l'a produit et ne se partage pas entre langues,
+contrairement à une liste de villes. Il a été ajouté **sans changer
+`schema_version`** : un client antérieur ignore le champ, un manifest antérieur
+le laisse vide.
+
+Les assets d'une release GitHub vivent dans un espace de noms plat : les
+clusters y sont donc téléversés sous `clusters_<lang>.txt` pour ne pas entrer
+en collision avec un gazetteer homonyme. L'URL du manifest reflète ce nom.
 
 ## URLs des assets
 
