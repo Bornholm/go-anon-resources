@@ -39,6 +39,34 @@ Les codes langue connus sont `fr`, `en`, `es`. Quand plusieurs langues sont
 séparées par `_` au début du nom de fichier, le fichier est associé à toutes
 ces langues.
 
+## Hygiène des gazetteers
+
+Un gazetteer publié doit être **un terme par ligne, en minuscules, accents
+conservés**. Ni en-tête, ni colonnes annexes : le chargeur de go-anon prend la
+ligne (bornée au premier séparateur) comme clé de recherche.
+
+**Filtrer les entrées rares.** Les listes d'état civil sont dominées par le
+bruit de saisie : le fichier INSEE des prénoms compte 209 000 entrées dont 70 %
+n'apparaissent qu'une fois (`AAAAAA`, `AABDELMAJID`…). Mesuré sur WikiNER fr,
+ces entrées rares n'apportent **aucun rappel** — il reste à 98,2 % qu'on en
+garde 209 000 ou 3 700 — et coûtent énormément de précision :
+
+| liste prénoms | entrées | F1 (`-preset high-recall`) | précision PER |
+|---|---|---|---|
+| brute | 209 309 | 84,3 % | 67,0 % |
+| ≥ 5 porteurs | 28 352 | 92,2 % | 83,4 % |
+| **≥ 20 porteurs** | **10 524** | **94,9 %** | **90,5 %** |
+| ≥ 100 porteurs | 3 702 | 96,2 % | 94,5 % |
+
+Le seuil retenu est **20**. Au-delà, la précision progresse encore mais le
+rappel commence à céder (98,2 % → 98,0 % dès 200) : conserver trois fois plus de
+prénoms pour un rappel identique couvre mieux les documents réels, où un prénom
+rare désigne une personne tout aussi réelle qu'un prénom courant.
+
+**Vérifier après publication** avec `eval` côté go-anon, en passant les mêmes
+ressources qu'à l'entraînement — c'est la seule façon de voir qu'une liste
+dégrade le modèle qu'elle est censée aider.
+
 ## Procédure
 
 ### 1. Placer les fichiers

@@ -1,29 +1,29 @@
 {
   "schema_version": 1,
-  "version": "v2026.8.4-e93b031d",
-  "published_at": "2026-08-04T08:23:41Z",
+  "version": "v2026.8.15-6d4c4a13",
+  "published_at": "2026-08-15T12:03:57Z",
   "models": {
     "en": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en.crf.gz",
-      "sha256": "1527336b22636c60f188690012521fc69bb94fe5e78f172013935a3e33e69eff",
-      "size_bytes": 122971356
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en.crf.gz",
+      "sha256": "6150ecc32cfd9011b627d60814650a1dd99f2e16833a6b2342c3cf08820e1ffc",
+      "size_bytes": 79672003
     }
 ,
     "es": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/es.crf.gz",
-      "sha256": "3d167264ade17a56df7386c315dcf43d9f072771c22e5963beba80a65c5edf99",
-      "size_bytes": 103305250
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/es.crf.gz",
+      "sha256": "845d812cc7452746bdda036c9673f078221b657cafe2cd52a6abb2a3e469772b",
+      "size_bytes": 57635235
     }
 ,
     "fr": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/fr.crf.gz",
-      "sha256": "3625543515ecba158b41052879787a9d7e84b2e4d1f4a6d49e4c48338fe1b420",
-      "size_bytes": 97879832
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/fr.crf.gz",
+      "sha256": "2af623088080511b304c37ecd4bb659d31e1c690130d5bf3b329895cae7bd72c",
+      "size_bytes": 59682014
     }
   },
   "gazetteers": {
     "fr_villes": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/fr_villes.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/fr_villes.txt",
       "sha256": "29fd9caa04e8ff1e4126a059d3b2fac5e8978ef95dcba8478090b7e4058197e2",
       "size_bytes": 1492,
       "languages": ["fr"],
@@ -31,7 +31,7 @@
     }
 ,
     "en_countries": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en_countries.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en_countries.txt",
       "sha256": "a5cc5aef7fc905e4b33adfdc443e82e66829a2c28705c84771f884ed5e57062a",
       "size_bytes": 613,
       "languages": ["en"],
@@ -39,7 +39,7 @@
     }
 ,
     "en_cities": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en_cities.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en_cities.txt",
       "sha256": "e891bc3ce7df8f3e68022df00e046454944a16e4bb866aa418f8476ec99b6268",
       "size_bytes": 2011,
       "languages": ["en"],
@@ -47,7 +47,7 @@
     }
 ,
     "fr_communes": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/fr_communes.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/fr_communes.txt",
       "sha256": "5b5d6c79d674efae042bce74fa8faa0614a0b7f60c78f0f7f1194da1f539ab89",
       "size_bytes": 432409,
       "languages": ["fr"],
@@ -55,7 +55,7 @@
     }
 ,
     "fr_prenoms": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/fr_prenoms.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/fr_prenoms.txt",
       "sha256": "9ed1fd952c8140ae85b9307c6ab1bddd4b959f96170e0bec9c189273cd5e49b9",
       "size_bytes": 375433,
       "languages": ["fr"],
@@ -63,7 +63,7 @@
     }
 ,
     "en_firstnames": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en_firstnames.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en_firstnames.txt",
       "sha256": "14ad1b38229622910633ccee44b4ee370ecdc34a7aeb8af277a48370f99df8a7",
       "size_bytes": 1471,
       "languages": ["en"],
@@ -71,15 +71,15 @@
     }
 ,
     "fr_en_es_prenoms": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/fr_en_es_prenoms.txt",
-      "sha256": "8df870364dd09c1bef164bc971d296b5f9c8b502c919993daf8c515c9097ed35",
-      "size_bytes": 2104259,
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/fr_en_es_prenoms.txt",
+      "sha256": "07bef655b7d70afe9ab09fe2a6155bf59da329843c2d19f769e516ce35b86bf3",
+      "size_bytes": 75118,
       "languages": ["fr", "en", "es"],
       "type": "firstnames"
     }
 ,
     "en_universities": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en_universities.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en_universities.txt",
       "sha256": "e033b1254d886721bfce6cae359d47b616f9b29e5ca4e2c627d22d6828e0110e",
       "size_bytes": 702,
       "languages": ["en"],
@@ -87,7 +87,7 @@
     }
 ,
     "en_companies": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/en_companies.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/en_companies.txt",
       "sha256": "ee99ebecdda36c7862d1608b3eab473c42ee557815bb4cd4ff6be1b28e9a2cdb",
       "size_bytes": 841,
       "languages": ["en"],
@@ -96,13 +96,13 @@
   },
   "clusters": {
     "fr": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/clusters_fr.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/clusters_fr.txt",
       "sha256": "5afdd1d8f37909a23593a4f75cdd5560d3967b70309e721ef54bdda0214a9690",
       "size_bytes": 1321588
     }
 ,
     "en": {
-      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.4-e93b031d/clusters_en.txt",
+      "url": "https://github.com/Bornholm/go-anon-resources/releases/download/v2026.8.15-6d4c4a13/clusters_en.txt",
       "sha256": "7ccbaa28dfc96e210450d5087b13a74fc1aefa4d51d9cc08a96278d71a653e53",
       "size_bytes": 2676360
     }
